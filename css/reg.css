@@ -1,0 +1,10 @@
+/* ============================================================
+   登録画面 (reg.html) 専用スタイル — 隠しツール
+   ============================================================ */
+.swatches{display:flex;gap:7px}
+.swatch{width:26px;height:26px;border-radius:50%;border:2px solid transparent;cursor:pointer;padding:0}
+.swatch[aria-pressed=true]{border-color:var(--shironeri)}
+
+.sec{border:1px solid rgba(237,231,218,.1);border-radius:2px;padding:12px;margin-bottom:10px;background:rgba(11,23,40,.4)}
+.sec .top{display:flex;gap:9px;align-items:center;margin-bottom:8px}
+.sec .top input{flex:1}
