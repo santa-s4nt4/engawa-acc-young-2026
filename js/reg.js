@@ -67,6 +67,12 @@ function registerHTML(){
 
     <section class="panel">
       <h2>登録済み帳面 / JSON</h2>
+      <div class="sec">
+        <p class="hint" style="margin:0 0 8px">複数の写真をまとめて選ぶと、1枚ごとに別の帳面として一括で作成します(名前はファイル名から仮でつくので、あとで「編集」から直せます)。</p>
+        <div class="btnrow"><button id="bulkPick">複数の写真からまとめて作る</button></div>
+        <input type="file" id="bulkFile" accept="image/*" multiple hidden>
+        <div class="status" id="bulkSt"></div>
+      </div>
       <div class="booklist" id="bookList"></div>
       <div class="btnrow">
         <button id="dl">書き出す(ダウンロード)</button>
@@ -106,6 +112,9 @@ function bindRegister(){
   const view=$('#view');
   view.addEventListener('input', ()=>{ pullForm(); renderPreview(); });
   view.addEventListener('change', ()=>{ pullForm(); renderPreview(); });
+
+  $('#bulkPick').onclick=()=>$('#bulkFile').click();
+  $('#bulkFile').onchange=e=>{ bulkAddBooks([...e.target.files]); e.target.value=''; };
 
   drawSecs(); drawShots(); renderPreview(); renderBookList();
   bindJson();
@@ -169,6 +178,24 @@ async function saveDraft(){
   $('#st').textContent='保存しました';
   history.replaceState(null,'','reg.html?id='+encodeURIComponent(draft.id));
   renderPreview(); renderBookList();
+}
+
+/* ---- 複数写真からの一括登録(1枚 = 1帳面) ---- */
+async function bulkAddBooks(files){
+  const imgs=files.filter(f=>f.type.startsWith('image/'));
+  if(!imgs.length) return;
+  for(let i=0;i<imgs.length;i++){
+    $('#bulkSt').textContent = `作成中…(${i+1}/${imgs.length})`;
+    const f=imgs[i];
+    const img=await loadImg(await readFile(f)), cv=toCanvas(img);
+    const b=newDraft();
+    b.name = f.name.replace(/\.[^.]+$/,'').trim() || '無題の帳面';
+    b.samples.push({thumb:cv.toDataURL('image/jpeg',.82),embedding:await embed(cv),engine,name:f.name});
+    BOOKS.push(b);
+  }
+  await store.save(BOOKS);
+  $('#bulkSt').textContent = `${imgs.length}冊を作成しました。名前や中身は各帳面の「編集」から整えてください。`;
+  renderBookList();
 }
 
 /* ---- 登録済み帳面リスト ---- */
