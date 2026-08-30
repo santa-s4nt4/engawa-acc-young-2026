@@ -1,13 +1,11 @@
 /* ============================================================
    読み取り画面 (index.html) ロジック
    このページからは登録画面(reg.html)へのボタン遷移は用意しない。
-   一致した帳面が見つかったときだけ note.html へ進む。
+   閾値判定はせず、撮った写真ともっとも近い帳面を自動で開く。
    ============================================================ */
 let BOOKS = [];
 let lastScan = null;
-let thTouched = false;
-const cfg = { th: 0.55, mg: 0.04, auto: true };
-function defaults(){ cfg.th = engine === 'mobilenet' ? 0.78 : 0.55; }
+let autoOpen = true;
 
 function openBook(id){ location.href = 'note.html?id=' + encodeURIComponent(id); }
 
@@ -16,7 +14,7 @@ function scanHTML(){
     <div class="lede"><h1>読み取り</h1><p>まだ帳面が登録されていません。登録が済むと、ここで撮影した写真と全帳面の特徴ベクトルを突き合わせて照合できます。</p></div>
     <div class="panel"><div class="empty">現在照合できる帳面がありません。管理者による登録をお待ちください。</div></div>`;
   return `
-  <div class="lede"><h1>読み取り</h1><p>表紙を撮ると、登録済み ${BOOKS.length} 冊すべてとコサイン類似度を計算し、閾値を超えた帳面のページを開きます。</p></div>
+  <div class="lede"><h1>読み取り</h1><p>表紙を撮ると、登録済み ${BOOKS.length} 冊の中からもっとも近い帳面のページを開きます。</p></div>
   <div class="cols">
     <section class="panel">
       <h2>撮影</h2>
@@ -33,13 +31,7 @@ function scanHTML(){
       <ul class="rank" id="rank"></ul>
       <div class="empty" id="rankEmpty">まだ照合していません。</div>
       <div class="verdict" id="vd"></div>
-      <div class="knobs">
-        <div class="knob"><label for="th">採用の閾値(1位の類似度)<span id="thv">${cfg.th.toFixed(2)}</span></label>
-          <input type="range" id="th" min="0" max="0.99" step="0.01" value="${cfg.th}"></div>
-        <div class="knob"><label for="mg">1位と2位の差の下限<span id="mgv">${cfg.mg.toFixed(3)}</span></label>
-          <input type="range" id="mg" min="0" max="0.3" step="0.005" value="${cfg.mg}"></div>
-        <label class="toggle"><input type="checkbox" id="auto" ${cfg.auto?'checked':''}>一致したら自動でページを開く</label>
-      </div>
+      <label class="toggle" style="margin-top:16px"><input type="checkbox" id="auto" ${autoOpen?'checked':''}>自動でページを開く</label>
     </section>
   </div>`;
 }
@@ -55,11 +47,9 @@ function bindScan(){
   drop.addEventListener('dragleave',()=>drop.classList.remove('over'));
   drop.addEventListener('drop',e=>{e.preventDefault();drop.classList.remove('over');
     const f=e.dataTransfer.files[0];if(f)scan(f)});
-  $('#th').oninput=e=>{thTouched=true;cfg.th=+e.target.value;$('#thv').textContent=cfg.th.toFixed(2);if(lastScan)decide(false)};
-  $('#mg').oninput=e=>{cfg.mg=+e.target.value;$('#mgv').textContent=cfg.mg.toFixed(3);if(lastScan)decide(false)};
-  $('#auto').onchange=e=>cfg.auto=e.target.checked;
+  $('#auto').onchange=e=>autoOpen=e.target.checked;
   if(lastScan){ $('#qimg').src=lastScan.thumb; $('#q').classList.add('show');
-    $('#qmeta').innerHTML=lastScan.meta; drawRank(); decide(false); }
+    $('#qmeta').innerHTML=lastScan.meta; drawRank(); showMatch(false); }
 }
 async function scan(file){
   $('#st').textContent='照合中…';
@@ -77,7 +67,7 @@ async function scan(file){
     meta:`入力 / ${esc(file.name)}<br>次元 ${q.length} · ${Math.round(performance.now()-t0)}ms · ${engine}`};
   $('#qimg').src=lastScan.thumb; $('#q').classList.add('show'); $('#qmeta').innerHTML=lastScan.meta;
   $('#st').textContent='';
-  drawRank(); decide(true);
+  drawRank(); showMatch(true);
 }
 function drawRank(){
   const {scores}=lastScan, ul=$('#rank'); $('#rankEmpty').style.display='none'; ul.innerHTML='';
@@ -91,35 +81,22 @@ function drawRank(){
     requestAnimationFrame(()=>li.querySelector('.fill').style.width=Math.max(0,s.sim/max*100).toFixed(1)+'%');
   });
 }
-function decide(mayNavigate){
-  const {scores}=lastScan, top=scores[0], sec=scores[1];
-  const gap=top.sim-(sec?sec.sim:0), pass=top.sim>=cfg.th && gap>=cfg.mg;
-  const vd=$('#vd'); vd.className='verdict show '+(pass?'pass':'fail');
-  vd.innerHTML = pass
-    ? `一致 → <b>${esc(top.b.name)}</b><br>類似度 <b>${top.sim.toFixed(3)}</b> ≥ 閾値 <b>${cfg.th.toFixed(2)}</b> ／ 2位との差 <b>${gap.toFixed(3)}</b> ≥ <b>${cfg.mg.toFixed(3)}</b>
-       <div class="btnrow" style="margin-top:10px"><button class="primary" id="opnBtn">${esc(top.b.name)} を開く</button></div>`
-    : `未登録として扱う<br>${top.sim<cfg.th
-        ? `1位 <b>${top.sim.toFixed(3)}</b> が閾値 <b>${cfg.th.toFixed(2)}</b> に届きません`
-        : `1位と2位の差 <b>${gap.toFixed(3)}</b> が <b>${cfg.mg.toFixed(3)}</b> 未満で判断がつきません`}`;
+function showMatch(mayNavigate){
+  const {scores}=lastScan, top=scores[0];
+  const vd=$('#vd'); vd.className='verdict show pass';
+  vd.innerHTML = `もっとも近い帳面 → <b>${esc(top.b.name)}</b><br>類似度 <b>${top.sim.toFixed(3)}</b>(登録 ${scores.length} 冊中の1位)
+     <div class="btnrow" style="margin-top:10px"><button class="primary" id="opnBtn">${esc(top.b.name)} を今すぐ開く</button></div>`;
   const ob=$('#opnBtn'); if(ob) ob.onclick=()=>openBook(top.b.id);
-  if(pass && mayNavigate && cfg.auto) setTimeout(()=>openBook(top.b.id), 700);
+  if(mayNavigate && autoOpen) setTimeout(()=>openBook(top.b.id), 700);
 }
 
 (async function(){
-  defaults();
   BOOKS = await store.load();
   $('#view').innerHTML = scanHTML();
   bindScan();
 
-  /* MobileNetは裏側で読み込み、画面表示は待たせない。
-     読み込み完了時点でまだ何も撮っていなければ、精度に合わせて
-     閾値の初期値だけ更新する(ユーザーが手で動かしていれば触らない)。 */
+  /* MobileNetは裏側で読み込み、画面表示は待たせない。 */
   initEngine().then(async () => {
     if(!lastScan) for(const b of BOOKS) await reembedStale(b.samples);
-    if(!thTouched && !lastScan){
-      defaults();
-      const th=$('#th'), thv=$('#thv');
-      if(th){ th.value=cfg.th; thv.textContent=cfg.th.toFixed(2); }
-    }
   });
 })();

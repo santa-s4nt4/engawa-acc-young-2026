@@ -16,13 +16,7 @@
 .verdict{margin-top:15px;padding:11px 13px;border-radius:2px;font-size:12px;line-height:1.75;display:none}
 .verdict.show{display:block}
 .verdict.pass{background:rgba(111,191,139,.12);border-left:3px solid var(--ok)}
-.verdict.fail{background:rgba(217,124,106,.12);border-left:3px solid var(--ng)}
 .verdict b{font-family:var(--mono);font-weight:600}
-
-.knobs{margin-top:16px;border-top:1px solid rgba(237,231,218,.09);padding-top:14px;display:grid;gap:10px}
-.knob label{font-size:11px;color:var(--nezu);letter-spacing:.06em;display:flex;justify-content:space-between}
-.knob label span{font-family:var(--mono);color:var(--kincha-l)}
-.knob input[type=range]{width:100%;accent-color:var(--kincha);margin-top:5px}
 
 .query{margin-top:14px;display:none;gap:13px;align-items:center}
 .query.show{display:flex}
