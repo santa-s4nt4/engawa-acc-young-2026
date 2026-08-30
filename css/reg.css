@@ -8,3 +8,18 @@
 .sec{border:1px solid rgba(237,231,218,.1);border-radius:2px;padding:12px;margin-bottom:10px;background:rgba(11,23,40,.4)}
 .sec .top{display:flex;gap:9px;align-items:center;margin-bottom:8px}
 .sec .top input{flex:1}
+
+/* プレビュー: 帳面ページの折り込みアニメーションは編集のたびに
+   再生されると煩わしいので、reg.html内では止めて即時表示にする */
+#preview .fold{animation:none;opacity:1}
+
+/* 登録済み帳面リスト(編集対象の切り替え・削除) */
+.booklist{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;max-height:340px;overflow-y:auto}
+.booklist .row{display:flex;align-items:center;gap:10px;padding:8px 10px;
+  border:1px solid rgba(237,231,218,.12);border-radius:2px;background:rgba(11,23,40,.4)}
+.booklist .row.active{border-color:var(--kincha);background:rgba(201,162,39,.1)}
+.booklist img{width:36px;height:36px;object-fit:cover;border-radius:2px;flex-shrink:0;display:block}
+.booklist .nm{flex:1;min-width:0;font-family:var(--mincho);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.booklist .mt{font-family:var(--mono);font-size:9.5px;color:var(--nezu-d);white-space:nowrap}
+.booklist .acts{display:flex;gap:5px;flex-shrink:0}
+.booklist .acts button{padding:5px 8px;font-size:10.5px}

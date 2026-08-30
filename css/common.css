@@ -105,4 +105,39 @@ textarea{resize:vertical;line-height:1.8;font-size:12.5px}
 .empty{font-size:12px;color:var(--nezu);line-height:1.95;padding:6px 0}
 .crumb{display:flex;gap:10px;align-items:center;margin-bottom:16px;font-size:11.5px;color:var(--nezu)}
 
+/* 帳面ページ本体 — note.html(本物)と reg.html(プレビュー)で共用 */
+.fold{background:var(--ai);border:1px solid color-mix(in srgb,var(--accent) 34%,transparent);
+  border-radius:2px;padding:20px 22px;margin-bottom:-1px;transform-origin:top center;opacity:0;
+  animation:unfold .5s cubic-bezier(.25,.9,.3,1) forwards}
+.fold:nth-child(2n){background:#14293F}
+.fold:nth-child(1){animation-delay:.02s}.fold:nth-child(2){animation-delay:.11s}
+.fold:nth-child(3){animation-delay:.2s}.fold:nth-child(4){animation-delay:.28s}
+.fold:nth-child(5){animation-delay:.36s}.fold:nth-child(6){animation-delay:.44s}
+@keyframes unfold{from{opacity:0;transform:perspective(1400px) rotateX(-78deg)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.fold{animation:none;opacity:1}}
+.bookhead{display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap}
+.bookhead>img{width:96px;border:1px solid rgba(237,231,218,.2);border-radius:2px}
+.bookhead h3{font-family:var(--mincho);font-size:24px;margin:0 0 6px;letter-spacing:.12em;font-weight:400}
+.bookhead .sub{font-family:var(--mono);font-size:10.5px;color:var(--nezu);letter-spacing:.16em}
+.bookhead .desc{font-size:12.5px;line-height:2;color:#CFC7B6;margin:12px 0 0;max-width:54ch;white-space:pre-wrap}
+.prog{display:flex;align-items:center;gap:12px;margin-top:14px;max-width:420px}
+.prog .track{flex:1;height:6px;background:rgba(237,231,218,.1);border-radius:3px;overflow:hidden}
+.prog .fill{height:100%;background:var(--accent)}
+.prog .n{font-family:var(--mono);font-size:11.5px;color:var(--accent);white-space:nowrap}
+.fold h4{font-family:var(--mincho);font-size:12px;font-weight:400;letter-spacing:.24em;color:var(--accent);margin:0 0 13px}
+.stamps{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:10px;list-style:none;margin:0;padding:0}
+.stamps li{border:1px solid rgba(237,231,218,.12);border-radius:2px;padding:11px 12px;position:relative;min-height:72px}
+.stamps li .p{font-family:var(--mincho);font-size:14px;letter-spacing:.05em;padding-right:30px}
+.stamps li .d{font-family:var(--mono);font-size:10px;color:var(--nezu);margin-top:5px}
+.stamps li.done::after{content:"朱\A印";white-space:pre;position:absolute;right:8px;top:8px;width:29px;height:29px;
+  border:1.6px solid var(--shu);border-radius:3px;color:var(--shu);font-family:var(--mincho);font-size:9.5px;
+  line-height:1.1;display:grid;place-content:center;transform:rotate(-7deg);opacity:.85}
+.stamps li.dim{opacity:.45;border-style:dashed}
+
+/* JSON書き出し表示ダイアログ — note.html / reg.html で共用 */
+dialog{background:var(--ai);color:var(--shironeri);border:1px solid rgba(201,162,39,.4);border-radius:3px;
+  padding:20px;max-width:640px;width:92vw}
+dialog::backdrop{background:rgba(6,14,25,.72)}
+dialog textarea{height:220px;font-family:var(--mono);font-size:10px;background:var(--deep)}
+
 @media(prefers-reduced-motion:reduce){.rank .fill{transition:none}}

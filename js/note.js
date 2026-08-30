@@ -7,11 +7,6 @@
    ============================================================ */
 let BOOKS = [];
 
-function parseLines(t){
-  return String(t||'').split('\n').map(l=>l.trim()).filter(Boolean)
-    .map(l=>{const i=l.indexOf('|');return i<0?[l,'']:[l.slice(0,i).trim(),l.slice(i+1).trim()]});
-}
-
 /* ---- 一覧 ---- */
 function libraryHTML(){
   return `
@@ -77,29 +72,10 @@ function bookHTML(id){
   if(!b) return `
     <div class="crumb"><a href="note.html" style="color:inherit">← 一覧へ</a></div>
     <div class="panel"><div class="empty">この帳面は見つかりません。</div></div>`;
-  const secs=b.sections.filter(s=>parseLines(s.lines).length||s.title);
-  const done=secs.filter(s=>!s.dim).reduce((n,s)=>n+parseLines(s.lines).length,0);
-  const all=secs.reduce((n,s)=>n+parseLines(s.lines).length,0);
-  const hasDim=secs.some(s=>s.dim)&&all>0;
   return `
   <div class="crumb"><a href="index.html" style="color:inherit">← 読み取りに戻る</a>
     <span>${esc(b.name)} / ${b.samples.length}枚で登録</span></div>
-  <div style="--accent:${esc(b.accent||'#C9A227')}">
-    <div class="fold"><div class="bookhead"><img src="${b.samples[0].thumb}" alt="">
-      <div><h3>${esc(b.name)}</h3>
-        ${b.subtitle?`<div class="sub">${esc(b.subtitle)}</div>`:''}
-        ${b.intro?`<p class="desc">${esc(b.intro)}</p>`:''}
-        ${hasDim?`<div class="prog"><div class="track"><div class="fill" style="width:${Math.round(done/all*100)}%"></div></div>
-          <div class="n">${done} / ${all}</div></div>`:''}
-      </div></div></div>
-    ${secs.map(s=>{const it=parseLines(s.lines);return `
-      <div class="fold"><h4>${esc(s.title||'—')}</h4>
-        ${it.length?`<ul class="stamps">${it.map(([p,d])=>
-          `<li class="${s.dim?'dim':'done'}"><div class="p">${esc(p)}</div><div class="d">${esc(d||'—')}</div></li>`).join('')}</ul>`
-          :'<div class="empty">まだ何もありません。</div>'}</div>`}).join('')}
-    <div class="fold"><h4>この帳面について</h4>
-      <p class="hint">ID <code>${esc(b.id)}</code> · ${b.samples[0].embedding.length}次元 · ${esc(b.samples[0].engine)}</p></div>
-  </div>`;
+  ${renderBookPage(b)}`;
 }
 function bindBook(){}
 

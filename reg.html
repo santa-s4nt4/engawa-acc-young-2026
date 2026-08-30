@@ -24,6 +24,13 @@
     </main>
   </div>
 
+  <dialog id="jsonDlg">
+    <h3 style="font-family:var(--mincho);font-weight:400;letter-spacing:.2em;margin:0 0 12px">書き出したJSON</h3>
+    <p style="font-size:11.5px;color:var(--nezu);line-height:1.8;margin:0 0 10px">ダウンロードが使えない環境向けの控えです。全選択してコピーしてください。</p>
+    <textarea id="jsonOut" readonly></textarea>
+    <div class="btnrow" style="margin-top:12px"><button onclick="jsonDlg.close()">閉じる</button></div>
+  </dialog>
+
   <script src="js/common.js"></script>
   <script src="js/engine.js"></script>
   <script src="js/reg.js"></script>
