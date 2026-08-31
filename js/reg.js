@@ -8,11 +8,11 @@
    ============================================================ */
 let BOOKS = [];
 let draft = null;
-const ACCENTS = [['金茶','#C9A227'],['朱','#C7382E'],['若竹','#6FA98A'],['藤','#9B8ACB'],['白練','#D9D2C4']];
+const ACCENTS = [['金茶','#C08A1E'],['朱','#DE3A2A'],['若竹','#2E9A6E'],['藤','#7A5FC4'],['白練','#7A6A52']];
 
 function newDraft(){
   return {
-    id: uid(), name:'', subtitle:'', accent:'#C9A227', intro:'',
+    id: uid(), name:'', subtitle:'', accent:'#C08A1E', intro:'',
     sections:[{title:'拝受済み',dim:false,lines:''},{title:'これから',dim:true,lines:''}],
     samples:[]
   };

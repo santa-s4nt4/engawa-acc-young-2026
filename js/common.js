@@ -64,7 +64,7 @@ function renderBookPage(b){
   const all=secs.reduce((n,s)=>n+parseLines(s.lines).length,0);
   const hasDim=secs.some(s=>s.dim)&&all>0;
   return `
-  <div style="--accent:${esc(b.accent||'#C9A227')}">
+  <div style="--accent:${esc(b.accent||'#C08A1E')}">
     <div class="fold"><div class="bookhead"><img src="${b.samples[0].thumb}" alt="">
       <div><h3>${esc(b.name)}</h3>
         ${b.subtitle?`<div class="sub">${esc(b.subtitle)}</div>`:''}

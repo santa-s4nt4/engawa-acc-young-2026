@@ -26,11 +26,16 @@ function scanHTML(){
       <button id="pick" class="ghost picksm">画像から選ぶ</button>
       <button id="shutter" class="shutter" aria-label="撮影" disabled><span class="dot"></span></button>
     </div>
+    <div class="verdict" id="vd"></div>
     <input type="file" id="f1" accept="image/*" hidden>
     <div class="query" id="q"><img id="qimg" alt="読み取った画像"><div class="meta" id="qmeta"></div></div>
-    <div class="status" id="st"></div>
-    <div class="verdict" id="vd"></div>
-  </section>`;
+  </section>
+  <div class="scanOverlay" id="scanOverlay">
+    <div class="scanCard">
+      <div class="txt">御神酒・奉納酒を検索中…</div>
+      <div class="gauge"><div class="fill" id="scanGaugeFill"></div></div>
+    </div>
+  </div>`;
 }
 function bindScan(){
   if(!BOOKS.length) return;
@@ -70,13 +75,29 @@ function captureFrame(video, size=224){
   return c;
 }
 
+/* ---- 検索中オーバーレイ — 全ボタンを覆って操作できなくする ---- */
+function showOverlay(){
+  const fill=$('#scanGaugeFill');
+  fill.style.transition='none'; fill.style.width='0%';
+  void fill.offsetWidth;
+  $('#scanOverlay').classList.add('show');
+}
+function hideOverlay(){ $('#scanOverlay').classList.remove('show'); }
+function growGauge(ms){
+  const fill=$('#scanGaugeFill');
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    fill.style.transition=`width ${ms}ms linear`;
+    fill.style.width='100%';
+  }));
+}
+
 async function scan(file){
-  $('#st').textContent='照合中…';
+  showOverlay();
   const img=await loadImg(await readFile(file));
   await processCanvas(toCanvas(img), file.name);
 }
 async function scanFromVideo(){
-  $('#st').textContent='照合中…';
+  showOverlay();
   await processCanvas(captureFrame($('#camVideo')), '撮影した写真');
 }
 async function processCanvas(cv, label){
@@ -91,22 +112,23 @@ async function processCanvas(cv, label){
   lastScan={scores,thumb:cv.toDataURL('image/jpeg',.8),
     meta:`入力 / ${esc(label)}<br>${Math.round(performance.now()-t0)}ms`};
   $('#qimg').src=lastScan.thumb; $('#q').classList.add('show'); $('#qmeta').innerHTML=lastScan.meta;
-  $('#st').textContent='';
   showMatch(true);
 }
 function showMatch(mayNavigate){
   const {scores}=lastScan, top=scores[0];
   const vd=$('#vd');
   if(top.sim < LOW_SIM){
+    hideOverlay();
     vd.className='verdict show fail';
     vd.innerHTML = 'うまく読み取れませんでした。画角を変えるか、御朱印全体がはっきり写るように撮り直してください。';
     return;
   }
-  vd.className='verdict show pass';
-  vd.innerHTML = `<b>${esc(top.b.name)}</b> を開きます…
-     <div class="btnrow" style="margin-top:10px"><button class="primary" id="opnBtn">今すぐ開く</button></div>`;
-  const ob=$('#opnBtn'); if(ob) ob.onclick=()=>openBook(top.b.id);
-  if(mayNavigate) setTimeout(()=>openBook(top.b.id), 2000);
+  vd.className='verdict';
+  if(mayNavigate){
+    showOverlay();
+    growGauge(2000);
+    setTimeout(()=>openBook(top.b.id), 2000);
+  }
 }
 
 (async function(){

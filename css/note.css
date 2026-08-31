@@ -4,7 +4,8 @@
    プレビューでも使うため css/common.css 側にある。
    ============================================================ */
 .lib{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
-.card{border:1px solid rgba(237,231,218,.12);border-radius:2px;overflow:hidden;background:rgba(11,23,40,.5);
+.card{border:1px solid rgba(32,40,64,.1);border-radius:2px;overflow:hidden;background:var(--ai);
+  box-shadow:0 1px 2px rgba(32,40,64,.05),0 6px 18px rgba(32,40,64,.06);
   display:flex;flex-direction:column}
 .card>img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block}
 .card .body{padding:10px;flex:1;display:flex;flex-direction:column;gap:4px}

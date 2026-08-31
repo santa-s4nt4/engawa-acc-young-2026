@@ -2,30 +2,39 @@
    読み取り画面 (index.html) 専用スタイル
    ============================================================ */
 .camwrap{position:relative;width:100%;max-width:360px;aspect-ratio:1/1;margin:0 auto;
-  border-radius:10px;overflow:hidden;background:#000;border:1px solid rgba(237,231,218,.18)}
+  border-radius:10px;overflow:hidden;background:#000;border:1px solid rgba(32,40,64,.18)}
 .camwrap video{width:100%;height:100%;object-fit:cover;display:block}
 .camwrap .camMsg{position:absolute;inset:0;display:none;align-items:center;justify-content:center;
-  text-align:center;padding:22px;font-size:12px;line-height:1.8;color:var(--nezu);background:rgba(11,23,40,.94)}
+  text-align:center;padding:22px;font-size:12px;line-height:1.8;color:var(--nezu);background:rgba(240,227,201,.94)}
 .camwrap .camMsg.show{display:flex}
 
 .camControls{position:relative;display:flex;align-items:center;justify-content:center;
   min-height:64px;margin-top:16px}
 .camControls .picksm{position:absolute;left:0;font-size:11px;padding:7px 11px}
-.shutter{flex-shrink:0;width:64px;height:64px;border-radius:50%;border:3px solid var(--shironeri);
+.shutter{flex-shrink:0;width:64px;height:64px;border-radius:50%;border:3px solid var(--shu);
   background:none;padding:4px;cursor:pointer}
-.shutter .dot{display:block;width:100%;height:100%;border-radius:50%;background:var(--shironeri);
+.shutter .dot{display:block;width:100%;height:100%;border-radius:50%;background:var(--shu);
   transition:transform .12s ease}
 .shutter:active .dot{transform:scale(.8)}
 .shutter:disabled{opacity:.35;cursor:not-allowed}
 .shutter:disabled .dot{background:var(--nezu-d)}
 
-.verdict{margin-top:15px;padding:11px 13px;border-radius:2px;font-size:12px;line-height:1.75;display:none}
+.verdict{margin-top:12px;padding:11px 13px;border-radius:2px;font-size:12px;line-height:1.75;display:none}
 .verdict.show{display:block}
-.verdict.pass{background:rgba(111,191,139,.12);border-left:3px solid var(--ok)}
-.verdict.fail{background:rgba(217,124,106,.12);border-left:3px solid var(--ng)}
+.verdict.fail{background:rgba(200,92,62,.12);border-left:3px solid var(--ng)}
 .verdict b{font-family:var(--mono);font-weight:600}
 
 .query{margin-top:14px;display:none;gap:13px;align-items:center}
 .query.show{display:flex}
-.query img{width:82px;border:1px solid rgba(237,231,218,.2);border-radius:2px}
+.query img{width:82px;border:1px solid rgba(32,40,64,.2);border-radius:2px}
 .query .meta{font-family:var(--mono);font-size:10.5px;color:var(--nezu);line-height:1.85}
+
+.scanOverlay{position:fixed;inset:0;z-index:500;display:none;
+  align-items:center;justify-content:center;padding:24px;background:rgba(32,40,64,.1)}
+.scanOverlay.show{display:flex}
+.scanCard{display:flex;flex-direction:column;align-items:center;gap:14px;
+  padding:20px 28px;border-radius:4px;background:rgba(255,252,245,.96);
+  box-shadow:0 4px 12px rgba(32,40,64,.1),0 16px 40px rgba(32,40,64,.16)}
+.scanOverlay .txt{font-family:var(--mincho);font-size:14px;letter-spacing:.14em;color:var(--shironeri)}
+.scanOverlay .gauge{width:200px;height:5px;background:rgba(32,40,64,.12);border-radius:3px;overflow:hidden}
+.scanOverlay .gauge .fill{height:100%;width:0;background:linear-gradient(90deg,var(--kincha),var(--shu))}
