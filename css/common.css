@@ -72,7 +72,6 @@ input[type=text],textarea,select{width:100%;background:var(--deep);color:var(--s
   font-family:var(--gothic)}
 textarea{resize:vertical;line-height:1.8;font-size:12.5px}
 .field{margin-bottom:14px}
-.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .hint{font-size:10.5px;color:var(--nezu-d);line-height:1.7;margin:5px 0 0}
 
 .drop{border:1px dashed rgba(192,138,30,.45);border-radius:3px;padding:22px 14px;text-align:center;
@@ -91,9 +90,6 @@ textarea{resize:vertical;line-height:1.8;font-size:12.5px}
 .note{font-size:11.5px;line-height:1.8;padding:10px 12px;border-radius:2px;margin-bottom:14px}
 .note.warn{background:rgba(200,92,62,.12);border-left:3px solid var(--ng)}
 .note.info{background:rgba(192,138,30,.1);border-left:3px solid var(--kincha)}
-
-.toggle{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--nezu);white-space:nowrap;cursor:pointer}
-.toggle input{accent-color:var(--kincha)}
 
 .loadbar{display:flex;align-items:center;gap:10px;margin:0 0 18px;padding:9px 12px;
   border:1px solid rgba(192,138,30,.3);border-radius:2px;background:rgba(251,243,226,.5);

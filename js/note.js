@@ -29,7 +29,7 @@ function libraryHTML(){
       <button id="up">読み込む</button>
       <button class="danger" id="wipe">全部消す</button></div>
     <input type="file" id="jf" accept="application/json,.json" hidden>
-    <p class="hint" style="margin-top:12px">書き出したJSONには帳面ごとに <code>id / name / subtitle / accent / intro / sections</code> とベクトル <code>samples[].embedding</code> が入ります。写真は224px正方のJPEGとして <code>thumb</code> に埋め込まれるので、別の端末で読み込んでもそのまま再現できます。本番でベクトルだけを配信したい場合は <code>thumb</code> を落としてください。</p>
+    <p class="hint" style="margin-top:12px">書き出したJSONには帳面ごとに <code>id / name / accent / intro / sections</code> とベクトル <code>samples[].embedding</code> が入ります。写真は224px正方のJPEGとして <code>thumb</code> に埋め込まれるので、別の端末で読み込んでもそのまま再現できます。本番でベクトルだけを配信したい場合は <code>thumb</code> を落としてください。</p>
     <p class="hint">公開して誰でも読み取り〜帳面を見られるようにするには、書き出したJSONで <code>data/books.json</code> を上書きしてコミット・pushしてください。reg.htmlで登録した内容はこのブラウザだけに保存されており、<code>data/books.json</code> を更新するまでは公開サイトには反映されません。</p>
     <div class="status" id="st"></div>
   </section>`;

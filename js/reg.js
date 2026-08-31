@@ -12,8 +12,8 @@ const ACCENTS = [['金茶','#C08A1E'],['朱','#DE3A2A'],['若竹','#2E9A6E'],['�
 
 function newDraft(){
   return {
-    id: uid(), name:'', subtitle:'', accent:'#C08A1E', intro:'',
-    sections:[{title:'拝受済み',dim:false,lines:''},{title:'これから',dim:true,lines:''}],
+    id: uid(), name:'', accent:'#C08A1E', intro:'',
+    sections:[{title:'',lines:''}],
     samples:[]
   };
 }
@@ -39,20 +39,16 @@ function registerHTML(){
 
     <section class="panel">
       <h2>ページの中身</h2>
-      <div class="field"><label class="f" for="nm">帳面の名前</label>
-        <input type="text" id="nm" value="${esc(draft.name)}" placeholder="鎌倉 巡礼帖"></div>
-      <div class="two">
-        <div class="field"><label class="f" for="sb">見出しの下に出す小文字</label>
-          <input type="text" id="sb" value="${esc(draft.subtitle)}" placeholder="令和六年 春"></div>
-        <div class="field"><label class="f">ページの色</label>
-          <div class="swatches">${ACCENTS.map(([n,c])=>
-            `<button class="swatch" title="${n}" data-c="${c}" style="background:${c}" aria-pressed="${draft.accent===c}"></button>`).join('')}</div></div>
-      </div>
-      <div class="field"><label class="f" for="in">紹介文</label>
-        <textarea id="in" rows="3" placeholder="この帳面の由来や、めぐり方の覚え書き">${esc(draft.intro)}</textarea></div>
-      <div class="field"><label class="f">節</label><div id="secs"></div>
-        <button id="addSec" class="ghost">節を追加</button>
-        <p class="hint">1行が1件です。<code>杉本寺 | 5.12 開山堂</code> のように縦棒で区切ると、右側が小さな補足になります。</p></div>
+      <div class="field"><label class="f" for="nm">神社の名前</label>
+        <input type="text" id="nm" value="${esc(draft.name)}" placeholder="鶴岡八幡宮"></div>
+      <div class="field"><label class="f">ページの色</label>
+        <div class="swatches">${ACCENTS.map(([n,c])=>
+          `<button class="swatch" title="${n}" data-c="${c}" style="background:${c}" aria-pressed="${draft.accent===c}"></button>`).join('')}</div></div>
+      <div class="field"><label class="f" for="in">神社の概要</label>
+        <textarea id="in" rows="3" placeholder="神社の由来や見どころ">${esc(draft.intro)}</textarea></div>
+      <div class="field"><label class="f">奉納している酒蔵</label><div id="secs"></div>
+        <button id="addSec" class="ghost">酒蔵を追加</button>
+        <p class="hint">節ごとに酒蔵を1つ登録します。中の1行が飲食店1件です。<code>地酒 えん | 鎌倉市御成町1-2</code> のように縦棒で区切ると、右側が住所などの補足になります。</p></div>
       <div class="btnrow" style="margin-top:6px">
         <button class="primary" id="save">保存する</button>
         <button id="cancel" class="ghost">新しい帳面にする</button></div>
@@ -104,7 +100,7 @@ function bindRegister(){
     document.querySelectorAll('.swatch').forEach(x=>x.setAttribute('aria-pressed',x.dataset.c===draft.accent));
     renderPreview();
   });
-  $('#addSec').onclick=()=>{ pullForm(); draft.sections.push({title:'',dim:false,lines:''}); drawSecs(); renderPreview(); };
+  $('#addSec').onclick=()=>{ pullForm(); draft.sections.push({title:'',lines:''}); drawSecs(); renderPreview(); };
   $('#save').onclick=saveDraft;
   $('#cancel').onclick=()=>{ draft=newDraft(); history.replaceState(null,'','reg.html'); renderAll(); };
 
@@ -124,19 +120,17 @@ function drawSecs(){
   draft.sections.forEach((s,i)=>{
     const d=document.createElement('div'); d.className='sec';
     d.innerHTML=`<div class="top">
-        <input type="text" placeholder="節の名前(拝受済み など)" value="${esc(s.title)}" data-t="${i}">
-        <label class="toggle"><input type="checkbox" data-d="${i}" ${s.dim?'checked':''}>これから</label>
-        <button class="ghost danger" data-x="${i}" title="この節を削除">×</button></div>
-      <textarea rows="3" placeholder="杉本寺 | 5.12 開山堂" data-l="${i}">${esc(s.lines)}</textarea>`;
+        <input type="text" placeholder="酒蔵の名前(月の井酒造 など)" value="${esc(s.title)}" data-t="${i}">
+        <button class="ghost danger" data-x="${i}" title="この酒蔵を削除">×</button></div>
+      <textarea rows="3" placeholder="地酒 えん | 鎌倉市御成町1-2" data-l="${i}">${esc(s.lines)}</textarea>`;
     w.appendChild(d);
   });
   w.querySelectorAll('[data-x]').forEach(b=>b.onclick=()=>{pullForm();draft.sections.splice(+b.dataset.x,1);drawSecs();renderPreview()});
 }
 function pullForm(){
-  draft.name=$('#nm').value.trim(); draft.subtitle=$('#sb').value.trim(); draft.intro=$('#in').value;
+  draft.name=$('#nm').value.trim(); draft.intro=$('#in').value;
   document.querySelectorAll('[data-t]').forEach(i=>draft.sections[+i.dataset.t].title=i.value);
   document.querySelectorAll('[data-l]').forEach(i=>draft.sections[+i.dataset.l].lines=i.value);
-  document.querySelectorAll('[data-d]').forEach(i=>draft.sections[+i.dataset.d].dim=i.checked);
 }
 async function addShots(files){
   const imgs=files.filter(f=>f.type.startsWith('image/'));
