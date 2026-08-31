@@ -6,7 +6,6 @@
    ============================================================ */
 let BOOKS = [];
 let lastScan = null;
-let autoOpen = true;
 let camStream = null;
 const LOW_SIM = 0.15; // これを下回ったら「うまく読み取れなかった」として撮り直しを促す
 
@@ -14,15 +13,14 @@ function openBook(id){ location.href = 'note.html?id=' + encodeURIComponent(id);
 
 function scanHTML(){
   if(!BOOKS.length) return `
-    <div class="lede"><h1>読み取り</h1><p>まだ帳面が登録されていません。登録が済むと、ここで撮影した写真と全帳面の特徴ベクトルを突き合わせて照合できます。</p></div>
     <div class="panel"><div class="empty">現在照合できる帳面がありません。管理者による登録をお待ちください。</div></div>`;
   return `
-  <div class="lede"><h1>読み取り</h1><p>表紙を撮ると、登録済み ${BOOKS.length} 冊の中からもっとも近い帳面のページを開きます。</p></div>
   <section class="panel">
-    <h2>撮影</h2>
+    <h2>御朱印読み取り</h2>
+    <p class="hint" style="margin-bottom:14px">神社で受け取った御朱印を、カメラ画面いっぱいに写るように撮影してください。</p>
     <div class="camwrap" id="camwrap">
       <video id="camVideo" autoplay playsinline muted></video>
-      <div class="camMsg" id="camMsg" hidden></div>
+      <div class="camMsg" id="camMsg"></div>
     </div>
     <div class="camControls">
       <button id="pick" class="ghost picksm">画像から選ぶ</button>
@@ -32,7 +30,6 @@ function scanHTML(){
     <div class="query" id="q"><img id="qimg" alt="読み取った画像"><div class="meta" id="qmeta"></div></div>
     <div class="status" id="st"></div>
     <div class="verdict" id="vd"></div>
-    <label class="toggle" style="margin-top:14px"><input type="checkbox" id="auto" ${autoOpen?'checked':''}>自動でページを開く</label>
   </section>`;
 }
 function bindScan(){
@@ -40,7 +37,6 @@ function bindScan(){
   $('#pick').onclick=()=>$('#f1').click();
   $('#f1').onchange=e=>e.target.files[0]&&scan(e.target.files[0]);
   $('#shutter').onclick=()=>scanFromVideo();
-  $('#auto').onchange=e=>autoOpen=e.target.checked;
   if(lastScan){ $('#qimg').src=lastScan.thumb; $('#q').classList.add('show');
     $('#qmeta').innerHTML=lastScan.meta; showMatch(false); }
   startCamera();
@@ -50,18 +46,19 @@ function bindScan(){
 async function startCamera(){
   const video=$('#camVideo'), msg=$('#camMsg'), shutter=$('#shutter');
   if(!navigator.mediaDevices?.getUserMedia){
-    msg.hidden=false; msg.textContent='このブラウザはカメラに対応していません。「画像から選ぶ」から写真を選んでください。';
+    msg.textContent='このブラウザはカメラに対応していません。「画像から選ぶ」から写真を選んでください。';
+    msg.classList.add('show');
     return;
   }
   try{
     camStream = await navigator.mediaDevices.getUserMedia({ video:{ facingMode:{ ideal:'environment' } }, audio:false });
     video.srcObject = camStream;
     await video.play();
-    msg.hidden = true;
+    msg.classList.remove('show');
     shutter.disabled = false;
   }catch(e){
-    msg.hidden = false;
     msg.textContent = 'カメラを利用できません。「画像から選ぶ」から写真を選んでください。';
+    msg.classList.add('show');
     shutter.disabled = true;
   }
 }
@@ -92,7 +89,7 @@ async function processCanvas(cv, label){
     return {b,sim:best,si:bi};
   }).sort((a,b)=>b.sim-a.sim);
   lastScan={scores,thumb:cv.toDataURL('image/jpeg',.8),
-    meta:`入力 / ${esc(label)}<br>${Math.round(performance.now()-t0)}ms · ${engine}`};
+    meta:`入力 / ${esc(label)}<br>${Math.round(performance.now()-t0)}ms`};
   $('#qimg').src=lastScan.thumb; $('#q').classList.add('show'); $('#qmeta').innerHTML=lastScan.meta;
   $('#st').textContent='';
   showMatch(true);
@@ -109,7 +106,7 @@ function showMatch(mayNavigate){
   vd.innerHTML = `<b>${esc(top.b.name)}</b> を開きます…
      <div class="btnrow" style="margin-top:10px"><button class="primary" id="opnBtn">今すぐ開く</button></div>`;
   const ob=$('#opnBtn'); if(ob) ob.onclick=()=>openBook(top.b.id);
-  if(mayNavigate && autoOpen) setTimeout(()=>openBook(top.b.id), 700);
+  if(mayNavigate) setTimeout(()=>openBook(top.b.id), 2000);
 }
 
 (async function(){

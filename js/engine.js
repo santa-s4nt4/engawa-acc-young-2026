@@ -32,18 +32,18 @@ function setLoadbar(pct, label, done){
   }
 }
 async function initEngine(){
-  setLoadbar(6, 'ローカル特徴量で起動中 / MobileNetを取得中', false);
+  setLoadbar(6, '準備しています', false);
   try{
     await loadScript(TFJS);
-    setLoadbar(45, 'MobileNetモデルを取得中', false);
+    setLoadbar(45, '読み込んでいます', false);
     await loadScript(MNET);
-    setLoadbar(75, 'モデルを初期化中', false);
+    setLoadbar(75, '準備しています', false);
     mnet = await window.mobilenet.load({version:2, alpha:1.0});
     engine = 'mobilenet';
-    setLoadbar(100, 'MobileNet v2 準備完了', true);
+    setLoadbar(100, '準備ができました', true);
   }catch(e){
     engine = 'local';
-    setLoadbar(100, '内蔵簡易特徴量のまま起動', true);
+    setLoadbar(100, '準備ができました', true);
   }
   const el = document.getElementById('eng');
   if(el) el.innerHTML = engine === 'mobilenet'
