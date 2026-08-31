@@ -26,7 +26,8 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opa
 .rail{flex:0 0 88px;border-right:1px solid rgba(192,138,30,.22);padding:24px 0 18px;
   display:flex;flex-direction:column;align-items:center;gap:24px;
   background:linear-gradient(180deg,rgba(245,233,210,.45),transparent)}
-.rail .brand{writing-mode:vertical-rl;font-family:var(--mincho);font-size:19px;letter-spacing:.34em}
+.rail .brand{writing-mode:vertical-rl;font-family:var(--mincho);font-size:25px;font-weight:600;
+  letter-spacing:.4em;color:var(--kincha);text-shadow:0 1px 0 rgba(255,252,245,.6)}
 .rail .eng{writing-mode:vertical-rl;font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;color:var(--nezu-d);margin-top:auto}
 .rail .eng b{color:var(--kincha);font-weight:600}
 
@@ -36,7 +37,7 @@ main{flex:1;min-width:0;padding:28px 32px 70px}
   .rail{flex:0 0 auto;flex-direction:row;gap:14px;padding:12px 14px;border-right:none;
     border-bottom:1px solid rgba(192,138,30,.22);align-items:center}
   .rail .brand,.rail .eng{writing-mode:horizontal-tb}
-  .rail .brand{font-size:15px;letter-spacing:.2em}
+  .rail .brand{font-size:19px;letter-spacing:.24em}
   .rail .eng{margin-top:0;margin-left:auto;font-size:9px;text-align:right}
   main{padding:20px 15px 60px}
 }
