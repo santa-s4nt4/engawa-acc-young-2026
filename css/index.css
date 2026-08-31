@@ -1,21 +1,27 @@
 /* ============================================================
    読み取り画面 (index.html) 専用スタイル
    ============================================================ */
-.rank{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px}
-.rank li{display:grid;grid-template-columns:34px 1fr 56px;gap:10px;align-items:center}
-.rank img{width:34px;height:42px;object-fit:cover;border:1px solid rgba(237,231,218,.16);border-radius:1px}
-.rank .bar{display:flex;flex-direction:column;gap:5px;min-width:0}
-.rank .nm{font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.rank .track{height:5px;background:rgba(237,231,218,.1);border-radius:3px;overflow:hidden}
-.rank .fill{height:100%;width:0;background:var(--nezu-d);transition:width .5s cubic-bezier(.2,.8,.2,1)}
-.rank li.top .fill{background:linear-gradient(90deg,var(--kincha),var(--kincha-l))}
-.rank li.top .nm{color:var(--kincha-l)}
-.rank .val{font-family:var(--mono);font-size:12px;text-align:right;color:var(--nezu)}
-.rank li.top .val{color:var(--kincha-l)}
+.camwrap{position:relative;width:100%;max-width:360px;aspect-ratio:1/1;margin:0 auto;
+  border-radius:10px;overflow:hidden;background:#000;border:1px solid rgba(237,231,218,.18)}
+.camwrap video{width:100%;height:100%;object-fit:cover;display:block}
+.camwrap .camMsg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  text-align:center;padding:22px;font-size:12px;line-height:1.8;color:var(--nezu);background:rgba(11,23,40,.94)}
+
+.camControls{position:relative;display:flex;align-items:center;justify-content:center;
+  min-height:64px;margin-top:16px}
+.camControls .picksm{position:absolute;left:0;font-size:11px;padding:7px 11px}
+.shutter{flex-shrink:0;width:64px;height:64px;border-radius:50%;border:3px solid var(--shironeri);
+  background:none;padding:4px;cursor:pointer}
+.shutter .dot{display:block;width:100%;height:100%;border-radius:50%;background:var(--shironeri);
+  transition:transform .12s ease}
+.shutter:active .dot{transform:scale(.8)}
+.shutter:disabled{opacity:.35;cursor:not-allowed}
+.shutter:disabled .dot{background:var(--nezu-d)}
 
 .verdict{margin-top:15px;padding:11px 13px;border-radius:2px;font-size:12px;line-height:1.75;display:none}
 .verdict.show{display:block}
 .verdict.pass{background:rgba(111,191,139,.12);border-left:3px solid var(--ok)}
+.verdict.fail{background:rgba(217,124,106,.12);border-left:3px solid var(--ng)}
 .verdict b{font-family:var(--mono);font-weight:600}
 
 .query{margin-top:14px;display:none;gap:13px;align-items:center}
